@@ -1,35 +1,32 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// src/App.tsx
+import { useEffect } from 'react';
+import { useAppDispatch } from './hooks/redux';
+import { PromptBuilder } from './components/PromptBuilder';
+import { PromptList } from './components/PromptList';
+import { setInitialState } from './store/promptSlice'; // Import setInitialState
 
 function App() {
-  const [count, setCount] = useState(0)
+    const dispatch = useAppDispatch();
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    useEffect(() => {
+        if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) { // Check if chrome exists
+            chrome.storage.local.get(['promptState'], (result: { promptState?: any }) => { // Type the result
+                if (result.promptState) {
+                    dispatch(setInitialState(result.promptState));
+                }
+            });
+        }
+    }, [dispatch]);
+    
+    return (
+        <div className="w-[400px] h-[600px] overflow-y-auto">
+            <header className="bg-blue-500 text-white p-4">
+                <h1 className="text-xl font-bold">Smart Prompt Manager</h1>
+            </header>
+            <PromptBuilder />
+            <PromptList />
+        </div>
+    );
 }
 
-export default App
+export default App;
