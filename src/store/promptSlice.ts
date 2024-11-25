@@ -1,11 +1,10 @@
 // src/store/promptSlice.ts
-
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Prompt, PromptState } from '../types/prompt';
-import { saveToStorage } from './chromeStorage';
 
+// Initialize state with correct structure
 const initialState: PromptState = {
-    prompts: []
+    prompts: [] // Make sure this is an array
 };
 
 const promptSlice = createSlice({
@@ -13,15 +12,34 @@ const promptSlice = createSlice({
     initialState,
     reducers: {
         setInitialState: (state, action: PayloadAction<PromptState>) => {
-            state.prompts = action.payload.prompts;
+            // Ensure we're setting a valid state structure
+            state.prompts = Array.isArray(action.payload.prompts) 
+                ? action.payload.prompts 
+                : [];
         },
         addPrompt: (state, action: PayloadAction<Prompt>) => {
+            // Ensure prompts is an array before pushing
+            if (!Array.isArray(state.prompts)) {
+                state.prompts = [];
+            }
             state.prompts.push(action.payload);
-            saveToStorage({ prompts: state.prompts });
+            // Save to Chrome storage
+            if (chrome.storage?.local) {
+                chrome.storage.local.set({ 
+                    promptState: { prompts: state.prompts } 
+                });
+            }
         },
         deletePrompt: (state, action: PayloadAction<string>) => {
-            state.prompts = state.prompts.filter(prompt => prompt.id !== action.payload);
-            saveToStorage({ prompts: state.prompts });
+            if (Array.isArray(state.prompts)) {
+                state.prompts = state.prompts.filter(prompt => prompt.id !== action.payload);
+                // Save to Chrome storage
+                if (chrome.storage?.local) {
+                    chrome.storage.local.set({ 
+                        promptState: { prompts: state.prompts } 
+                    });
+                }
+            }
         }
     }
 });

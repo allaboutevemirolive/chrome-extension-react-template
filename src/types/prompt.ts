@@ -15,3 +15,8 @@ export interface Prompt {
 export interface PromptState {
     prompts: Prompt[];
 }
+
+// Root state type
+export interface RootState {
+    prompts: PromptState;
+}
