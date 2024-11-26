@@ -6,6 +6,7 @@ import { ToolbarToggleButton } from './ToolbarToggleButton';
 import { ToolbarSearchInput } from './ToolbarSearchInput';
 import { FavoritePromptList } from './FavoritePromptList';
 
+// TODO: Need more refinement.
 export const QuickAccessToolbar: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
