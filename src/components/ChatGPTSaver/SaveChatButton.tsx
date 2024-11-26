@@ -111,6 +111,7 @@ export const SaveChatButton: React.FC = () => {
 
 
     const cleanupMarkdown = (markdown: string): string => {
+        // TODO: Update this list.
         const unwantedPatterns = [
             // Header content
             /ChatGPT 4o mini\n\nLog in\n\nChatGPT 4o mini\n\nLog in\n\nCreate free account\n\n/g,
@@ -137,10 +138,21 @@ export const SaveChatButton: React.FC = () => {
             /ChatGPT Pro\n/g,
             /ChatGPT Advanced\n/g,
 
-            // Match "?" followed by a newline
-            /"\?"\n/g,
-        ];
+            // Open Sidebar
+            /Open Sidebar\[\]\(\/\)\n/g, // Escaped square brackets and parentheses
 
+            // General unwanted text
+            /ChatGPT\n/g,
+            /Share\n/g,
+            /4o\n/g,
+            /User\n/g,
+
+            // Match "?" followed by a newline
+            /\?\n/g, // Simplified, no need to quote the question mark
+
+            // Match patterns like "![User]" followed by any suffix
+            /!\[User\]\(.*?\)/g, // Matches "![User]" followed by any content in parentheses
+        ];
 
         // Apply all cleanup patterns
         let cleanedMarkdown = markdown;
