@@ -5,7 +5,6 @@ import debounce from 'lodash.debounce';
 import { useAppDispatch, useAppSelector } from './hooks/redux';
 import { setInitialState } from './store/promptSlice';
 import { PromptManagerContainer } from './components/PromptManagerContainer';
-// import { QuickAccessToolbar } from './components/QuickAccessToolbar/QuickAccessToolbar';
 import { PromptState } from './types/prompt';
 
 function App() {

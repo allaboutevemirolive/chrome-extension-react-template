@@ -5,7 +5,12 @@
   "description": "Save and reuse AI prompts with smart templates",
   "permissions": [
     "storage",
-    "activeTab"
+    "activeTab",
+    "downloads",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://chat.openai.com/*"
   ],
   "action": {
     "default_popup": "index.html"
