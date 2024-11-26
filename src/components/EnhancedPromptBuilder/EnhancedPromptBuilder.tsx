@@ -3,13 +3,14 @@ import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Prompt } from '../../types/prompt';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { addPrompt, updatePrompt } from '../../store/promptSlice';
+import { addPrompt } from '../../store/promptSlice';
 import { PromptForm } from './PromptForm';
 import { TagManager } from './TagManager';
 import { FormActions } from './FormActions';
 import { EnhancedPromptBuilderProps, PromptFormData } from './EnhancedPromptBuilder.types';
 
-export const EnhancedPromptBuilder: React.FC<EnhancedPromptBuilderProps> = ({ onClose, editingPrompt }) => {
+// TODO: See `PromptBuilder` component.
+export const EnhancedPromptBuilder: React.FC<EnhancedPromptBuilderProps> = ({ onClose, editingPrompt, onUpdate }) => {
     const dispatch = useAppDispatch();
     const folders = useAppSelector(state => state.prompts.folders);
     const projects = useAppSelector(state => state.prompts.projects);
@@ -59,12 +60,12 @@ export const EnhancedPromptBuilder: React.FC<EnhancedPromptBuilderProps> = ({ on
             shortcut: formData.shortcut || undefined,
         };
 
-        if (editingPrompt) {
-            dispatch(updatePrompt(promptData));
+        if (editingPrompt && onUpdate) {
+            onUpdate(promptData); // Call onUpdate to handle saving in PromptItem
         } else {
             dispatch(addPrompt(promptData));
+            onClose(); // Close only when adding a new prompt
         }
-        onClose();
     };
 
     return (

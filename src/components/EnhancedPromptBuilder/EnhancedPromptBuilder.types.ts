@@ -1,10 +1,5 @@
 // src/components/EnhancedPromptBuilder/EnhancedPromptBuilder.types.ts
-import { Prompt, Tag } from '../../types/prompt';
-
-export interface EnhancedPromptBuilderProps {
-    onClose: () => void;
-    editingPrompt?: Prompt;
-}
+import { Prompt } from '../../types/prompt';
 
 export interface PromptFormData {
     title: string;
@@ -12,6 +7,12 @@ export interface PromptFormData {
     category: string;
     folderId: string;
     projectId: string;
-    tags: Tag[];
+    tags: { id: string; name: string }[];
     shortcut: string;
+}
+
+export interface EnhancedPromptBuilderProps {
+    onClose: () => void;
+    editingPrompt?: Prompt;
+    onUpdate?: (updatedPrompt: Prompt) => void; // Add onUpdate prop here
 }

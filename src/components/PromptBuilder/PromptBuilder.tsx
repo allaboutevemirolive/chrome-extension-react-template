@@ -12,6 +12,8 @@ interface Props {
     onClose: () => void;
 }
 
+// TODO: See `EnhancedPromptBuilder`.
+// TODO: Remove this component.
 export const PromptBuilder: React.FC<Props> = ({ onClose }) => {
     const dispatch = useAppDispatch();
     const [title, setTitle] = useState('');
