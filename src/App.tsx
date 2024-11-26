@@ -4,16 +4,34 @@ import { useAppDispatch } from './hooks/redux';
 import { PromptBuilder } from './components/PromptBuilder';
 import { PromptList } from './components/PromptList';
 import { setInitialState } from './store/promptSlice';
+import { FolderList } from './components/FolderList';
+import { QuickAccessToolbar } from './components/QuickAccessToolbar';
 
 function App() {
     const dispatch = useAppDispatch();
     const [isAddingPrompt, setIsAddingPrompt] = useState(false);
 
+    // src/App.tsx
     useEffect(() => {
         if (typeof chrome !== 'undefined' && chrome.storage?.local) {
             chrome.storage.local.get(['promptState'], (result) => {
-                // Initialize with empty prompts array if no data exists
-                const initialState = result.promptState || { prompts: [] };
+                const savedState = result.promptState || {};
+                // Ensure the state has the correct structure
+                const initialState = {
+                    prompts: Array.isArray(savedState.prompts) ? savedState.prompts : [],
+                    folders: Array.isArray(savedState.folders) ? savedState.folders : [],
+                    tags: Array.isArray(savedState.tags) ? savedState.tags : [],
+                    projects: Array.isArray(savedState.projects) ? savedState.projects : [],
+                    activeFolder: savedState.activeFolder || null,
+                    activeProject: savedState.activeProject || null,
+                    recentlyUsed: Array.isArray(savedState.recentlyUsed) ? savedState.recentlyUsed : [],
+                    userPreferences: {
+                        toolbarPosition: savedState.userPreferences?.toolbarPosition || 'bottom',
+                        toolbarDisplay: savedState.userPreferences?.toolbarDisplay || 'both',
+                        shortcuts: savedState.userPreferences?.shortcuts || {}
+                    }
+                };
+                console.log('Initializing state:', initialState); // Debug log
                 dispatch(setInitialState(initialState));
             });
         }
@@ -38,12 +56,14 @@ function App() {
             </header>
 
             <main className="flex-1 overflow-y-auto px-4 py-2">
+                <FolderList />
                 {isAddingPrompt ? (
                     <PromptBuilder onClose={() => setIsAddingPrompt(false)} />
                 ) : (
                     <PromptList />
                 )}
             </main>
+            <QuickAccessToolbar />
         </div>
     );
 }

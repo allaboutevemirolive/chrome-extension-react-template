@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useAppDispatch } from '../hooks/redux';
 import { addPrompt } from '../store/promptSlice';
+import { Prompt } from '../types/prompt';
 
 interface Props {
     onClose: () => void;
@@ -18,17 +19,22 @@ export const PromptBuilder: React.FC<Props> = ({ onClose }) => {
         e.preventDefault();
         if (!title.trim() || !content.trim()) return;
 
-        dispatch(addPrompt({
+        const newPrompt: Prompt = {
             id: uuidv4(),
             title: title.trim(),
             content: content.trim(),
             template: content.trim(),
             variables: [],
             category: category.trim(),
+            tags: [],
+            isFavorite: false,
+            useCount: 0,
             createdAt: new Date(),
             updatedAt: new Date(),
             version: 1,
-        }));
+        };
+
+        dispatch(addPrompt(newPrompt));
         onClose();
     };
 

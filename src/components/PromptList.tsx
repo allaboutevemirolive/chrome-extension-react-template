@@ -1,17 +1,26 @@
 // src/components/PromptList.tsx
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../hooks/redux';
 import { deletePrompt } from '../store/promptSlice';
 
 export const PromptList: React.FC = () => {
-    const prompts = useAppSelector(state => state.prompts.prompts);
+    const prompts = useAppSelector(state => state.prompts?.prompts || []); // Ensure prompts is an array
     const dispatch = useAppDispatch();
     const [searchTerm, setSearchTerm] = useState('');
 
-    const filteredPrompts = Array.isArray(prompts) ? prompts.filter(prompt =>
-        prompt.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        prompt.category.toLowerCase().includes(searchTerm.toLowerCase())
-    ) : []; // <--- If prompts is not an array, default to an empty array
+    const lowerCaseSearchTerm = searchTerm.toLowerCase(); // Optimization: Calculate once
+
+    const filteredPrompts = useMemo(() => {  // Use useMemo for performance
+        if (!lowerCaseSearchTerm) {
+            return prompts; // Return all prompts if search is empty
+        }
+
+        return prompts.filter(prompt => {
+            const lowerCaseTitle = prompt.title.toLowerCase();
+            const lowerCaseCategory = prompt.category.toLowerCase();
+            return lowerCaseTitle.includes(lowerCaseSearchTerm) || lowerCaseCategory.includes(lowerCaseSearchTerm);
+        });
+    }, [prompts, lowerCaseSearchTerm]); // Only recalculate when prompts or searchTerm changes
 
     return (
         <div className="space-y-4">
